@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace TowerDefence
 {
-    class Program
+    interface I_Updatable
     {
-        static void Main(string[] args)
-        {
-            Game.Init();
-            Game.Play();
-        }
+        void Update();
     }
 }

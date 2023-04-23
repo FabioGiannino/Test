@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="aiv-fast2d, Version=1.0.7820.23607, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aiv.Fast2D.1.0.4\lib\net48\aiv-fast2d.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=3.2.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.3.2\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,23 +49,80 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\Enemy.cs" />
+    <Compile Include="Actors\Player.cs" />
+    <Compile Include="Background.cs" />
+    <Compile Include="Bullets\Bullet.cs" />
+    <Compile Include="Bullets\EnemyBullet.cs" />
+    <Compile Include="Bullets\PlayerBullet.cs" />
+    <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Controllers\JoypadController.cs" />
+    <Compile Include="Controllers\KeyboardController.cs" />
+    <Compile Include="Engine\DrawMngr.cs" />
+    <Compile Include="Engine\GameObject.cs" />
+    <Compile Include="Engine\GfxMngr.cs" />
+    <Compile Include="Engine\GUI\ProgressBar.cs" />
+    <Compile Include="Engine\GUI\Text\Font.cs" />
+    <Compile Include="Engine\GUI\Text\FontMngr.cs" />
+    <Compile Include="Engine\GUI\Text\TextChar.cs" />
+    <Compile Include="Engine\GUI\Text\TextObject.cs" />
+    <Compile Include="Engine\Interfaces\I_Drawable.cs" />
+    <Compile Include="Engine\Interfaces\I_Updatable.cs" />
+    <Compile Include="Engine\Physics\Colliders\BoxCollider.cs" />
+    <Compile Include="Engine\Physics\Colliders\CircleCollider.cs" />
+    <Compile Include="Engine\Physics\Colliders\Collider.cs" />
+    <Compile Include="Engine\Physics\Colliders\ColliderFactory.cs" />
+    <Compile Include="Engine\Physics\Colliders\CompoundCollider.cs" />
+    <Compile Include="Engine\Physics\Collision.cs" />
+    <Compile Include="Engine\Physics\PhysicsMngr.cs" />
+    <Compile Include="Engine\Physics\RigidBody.cs" />
+    <Compile Include="Engine\UpdateMngr.cs" />
+    <Compile Include="FSM\State.cs" />
+    <Compile Include="FSM\StateMachine.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Managers\BulletMngr.cs" />
+    <Compile Include="Managers\CameraMgr.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomGenerator.cs" />
+    <Compile Include="Scenes\GameOverScene.cs" />
+    <Compile Include="Scenes\PlayScene.cs" />
+    <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Scenes\TitleScene.cs" />
+    <Compile Include="Tile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="OpenTK.dll.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\bg_0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Block.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\comics.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Enemy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\loadingBar_bar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\loadingBar_frame.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Player.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Road.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\textSheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Turret_1_barrel.png">
