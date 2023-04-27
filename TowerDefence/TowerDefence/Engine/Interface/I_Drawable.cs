@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace TowerDefence
 {
-    class Program
+    interface I_Drawable
     {
-        static void Main(string[] args)
-        {
-            Game.Init();
-            Game.Play();
-        }
+        void Draw();
     }
 }
