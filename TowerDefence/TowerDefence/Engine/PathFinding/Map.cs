@@ -259,19 +259,21 @@ namespace TowerDefence
 
                     if (GetNode(x, y) == null)
                     {
-                        sprite.DrawColor(new Vector4(0, 0, 0, 1));
+                        sprite.DrawColor(new Vector4(0.3f, 1, 0.3f, 1));
                     }
                     else if (GetNode(x, y).Cost == 1)
                     {
-                        sprite.DrawColor(new Vector4(1, 1, 1, 1));
+                        sprite.DrawTexture(GFXMngr.GetTexture("road"));
+//                        sprite.DrawColor(new Vector4(0.5f, 0.5f, 0.5f, 1));
                     }
                     else if (GetNode(x, y).Cost == 2)
                     {
-                        sprite.DrawColor(new Vector4(0, 1, 1, 1));
+                        sprite.DrawTexture(GFXMngr.GetTexture("block"));
+                        //sprite.DrawColor(new Vector4(0.5f, 1, 1, 1));
                     }
                     else 
                     {
-                        sprite.DrawColor(new Vector4(1, 0, 0, 1));
+                        sprite.DrawColor(new Vector4(1f, 0.6f, 0.67f, 1));
                     }
                 }
             }

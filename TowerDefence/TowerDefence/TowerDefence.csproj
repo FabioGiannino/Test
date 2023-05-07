@@ -55,6 +55,7 @@
     <Compile Include="Engine\PathFinding\Node.cs" />
     <Compile Include="Engine\PathFinding\PriorityQueue.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Engine\GFXMngr.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\Scene.cs" />

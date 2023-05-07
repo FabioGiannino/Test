@@ -1,0 +1,11 @@
+
+[*PER la strada: o la si crea prima della mappa, oppure avvio il pathfinding che, se fallisce, fa rigenerare la mappa. si ripete finchè non c'è una strada sensata]
+
+
+spawn solo di due tiles, in posizioni randomiche della mappa.
+
+calcolare le tiles adiacenti. a quel punto fare le regole (es. metto un array che ha 4 copie di lago e una copia di montagna. le tiles adiacenti sono un calcolo di queste probabilità).
+le tiles adiacenti appena nate dovranno tenere conto delle vicine già riempite per calcolare la probabilità delle tiles vuote.
+
+si ripete finchè tutta la mappa non è riempita.
+

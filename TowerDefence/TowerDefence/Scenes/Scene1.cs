@@ -25,6 +25,7 @@ namespace TowerDefence
 
         public override void Start()
         {
+            LoadAssets();
             //M.C.D tra 1280 e 720 è 80, che è il numero di celle
             base.Start();
             Map = new Map(10, 10, 100);
@@ -35,7 +36,8 @@ namespace TowerDefence
 
         protected override void LoadAssets()
         {
-            throw new NotImplementedException();
+            GFXMngr.AddTexture("road", "Assets/Road.png");
+            GFXMngr.AddTexture("block", "Assets/Block.png");
         }
 
 
