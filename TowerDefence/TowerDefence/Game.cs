@@ -12,18 +12,27 @@ namespace TowerDefence
     static class Game
     {
 
-        private static int windowWidth = 800;
-        private static int windowHeight = 800;
+        #region ParametersMap        
+        private static int horizontalCells = 20;
+        private static int verticalCells = 10;
+        private static int sizeCell = 80;
+        public static int SizeCell { get { return sizeCell; } }
+        public static int HorizontalCells { get { return horizontalCells; } }
+        public static int VerticalCells { get { return verticalCells; } }
+        #endregion
 
         public static Window Window;
         public static Scene CurrentScene { get; private set; }
         public static float DeltaTime { get { return Window.DeltaTime; } }
-
+        private static int windowWidth;
+        private static int windowHeight;
 
         public static void Init()
         {
-            Window = new Window(windowWidth, windowHeight, "Tower Defence");
-            Window.SetDefaultViewportOrthographicSize(10);
+            windowHeight = sizeCell * horizontalCells;
+            windowWidth = sizeCell * verticalCells;
+            Window = new Window(windowHeight,windowWidth, "Tower Defence");
+            Window.SetDefaultViewportOrthographicSize(verticalCells);
             Scene1 playScene = new Scene1();
             playScene.NextScene = playScene;
 
@@ -35,8 +44,6 @@ namespace TowerDefence
             CurrentScene.Start();
             while (Window.IsOpened)
             {
-                //Window.SetTitle($"FPS: {1f / Window.DeltaTime}");
-
                 if (Window.GetKey(KeyCode.Esc))
                 {
                     break;
@@ -56,8 +63,9 @@ namespace TowerDefence
                 }
 
                 CurrentScene.Input();
-               // CurrentScene.Update();
+                CurrentScene.Update();
                 CurrentScene.Draw();
+
 
                 Window.Update();
             }

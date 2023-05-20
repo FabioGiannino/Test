@@ -14,62 +14,38 @@ namespace TowerDefence
 
         private bool clickedL = false;
         private bool clickedR = false;
-        private bool clickedSpace = false;
+        private bool clickedC = false;
 
         public Scene1() : base()
         {
 
         }
 
-
-
         public override void Start()
         {
             LoadAssets();
-            //M.C.D tra 1280 e 720 è 80, che è il numero di celle
             base.Start();
-            Map = new Map(10, 10, 100);
+            Map = new Map(Game.HorizontalCells, Game.VerticalCells);
         }
-
-
-
 
         protected override void LoadAssets()
         {
             GFXMngr.AddTexture("road", "Assets/Road.png");
             GFXMngr.AddTexture("block", "Assets/Block.png");
+            GFXMngr.AddTexture("water", "Assets/Sea.png");
+            GFXMngr.AddTexture("forest", "Assets/Forest.png");
         }
-
-
 
         public override void Input()
         {
             
-            /*
-            if (Game.Window.MouseLeft)
-            {
-                if (!clickedL)
-                {
-                    clickedL = true;
-                    mousePos = new Vector2(Game.Window.MouseX, Game.Window.MouseY);
-                    List<Node> path = map.GetPath(agent.X, agent.Y, (int)mousePos.X, (int)mousePos.Y);
-                    //agent.SetPath(path);
-                }
-            }
-            else if (clickedL)
-            {
-                clickedL = false;
-            }*/
-
-
-
-            // Toggle Map Node (ON/OFF)
+            // Toggle Map Forest (ON/OFF)
             if (Game.Window.MouseRight)
             {
                 if (!clickedR)
                 {
                     clickedR = true;
-                    Map.ToggleNode((int)Game.Window.MouseX, (int)Game.Window.MouseY);
+                    Map.ToggleForest((int)Game.Window.MouseX, (int)Game.Window.MouseY);
                     //List<Node> path = map.GetPath(agent.X, agent.Y, (int)mousePos.X, (int)mousePos.Y);
                     //agent.SetPath(path);
                 }
@@ -79,30 +55,43 @@ namespace TowerDefence
                 clickedR = false;
             }
 
-
-            // Toggle Map Obstacle (ON/OFF)
-            if (Game.Window.GetKey(KeyCode.C))
+            // Toggle Map Block (ON/OFF)
+            /*if (Game.Window.MouseLeft)
             {
-                if (!clickedSpace)
+                if (!clickedL)
                 {
-                    clickedSpace = true;
-                    Map.ToggleObstacle((int)Game.Window.MouseX, (int)Game.Window.MouseY);
+                    clickedL = true;
+                    Map.ToggleBlock((int)Game.Window.MouseX, (int)Game.Window.MouseY);
                     //List<Node> path = map.GetPath(agent.X, agent.Y, (int)mousePos.X, (int)mousePos.Y);
                     //agent.SetPath(path);
                 }
             }
-            else if (clickedSpace)
+            else if (clickedL)
             {
-                clickedSpace = false;
+                clickedL = false;
+            }*/
+
+            // Toggle Map Sea (ON/OFF)
+            if (Game.Window.GetKey(KeyCode.C))
+            {
+                if (!clickedC)
+                {
+                    clickedC = true;
+                    Map.ToggleSea((int)Game.Window.MouseX, (int)Game.Window.MouseY);
+                    //List<Node> path = map.GetPath(agent.X, agent.Y, (int)mousePos.X, (int)mousePos.Y);
+                    //agent.SetPath(path);
+                }
+            }
+            else if (clickedC)
+            {
+                clickedC = false;
             }
         }
-
-
-
 
         public override void Update()
         {
             base.Update();
+            Map.WaveFunctionCollapse();
         }
 
 

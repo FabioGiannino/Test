@@ -10,6 +10,14 @@ namespace TowerDefence
 {
     class Map : I_Drawable
     {
+        private enum TILES
+        {
+            ROAD = 0,
+            FOREST = 1,
+            BLOCK = 2,
+            WATER = 3,
+            NON = 99
+        }
         Dictionary<Node, Node> cameFrom;        // parents
         Dictionary<Node, int> costSoFar;        // distances
         PriorityQueue frontier;                 // toVisit
@@ -18,31 +26,31 @@ namespace TowerDefence
         int height;
         int[] cells;
 
+        private Random rand = new Random();
         public int Width { get { return width; } }
         public Node[] Nodes { get; }
 
         Sprite sprite;
 
-        public Map(int width, int height, int cellsNumber)
+        public Map(int horizontalCells, int verticalCells )
         {
-            this.width = width;
-            this.height = height;
+
+            this.width = horizontalCells;
+            this.height = verticalCells;
+            int cellsNumber = horizontalCells * verticalCells;
             this.cells = new int[cellsNumber];
-            Random rand = new Random();
+
             for (int i = 0; i < cells.Length; i++)
             {
-                cells[i] = rand.Next(4);
+                cells[i] = 99;
             }
-
-
+            
             sprite = new Sprite(1, 1);  // each objects will be 1 cell (1 x 1) - to achieve this we must set the window orthographic size as well
             Nodes = new Node[cells.Length];
 
             // build Nodes from cells
             for (int i = 0; i < cells.Length; i++)
             {
-                if (cells[i] <= 0) { continue; }
-
                 int x = i % width;
                 int y = i / width;
                 Nodes[i] = new Node(x, y, cells[i]);
@@ -53,34 +61,24 @@ namespace TowerDefence
                 for (int x = 0; x < width; x++)
                 {
                     int index = y * width + x;
-
-                    if (Nodes[index] == null)
-                    {
-                        continue;
-                    }
-
                     AddNeighbours(Nodes[index], x, y);
                 }
             }
+
+            ToggleForest(0, 0);
+            WaveFunctionCollapse();
         }
 
         // Add a Neighbour Node (to the passed one) for each direction if they are valid
         void AddNeighbours(Node node, int x, int y)
         {
-            // Checks each direction neighbour for the current Node
-
-            // TOP
-            CheckNeighbours(node, x, y - 1);
-            // BOTTOM
-            CheckNeighbours(node, x, y + 1);
-            // RIGHT
-            CheckNeighbours(node, x + 1, y);
-            // LEFT
-            CheckNeighbours(node, x - 1, y);
+            // Checks each direction neighbour for the current Node            
+            CheckNeighbours(node, x, y - 1);    // TOP            
+            CheckNeighbours(node, x, y + 1);    // BOTTOM            
+            CheckNeighbours(node, x + 1, y);    // RIGHT            
+            CheckNeighbours(node, x - 1, y);    // LEFT
         }
 
-        // Checks if the Node at the passed X and Y is inside the map and it's valid and
-        // if it is, adds it to the current Node's neighbours
         public void CheckNeighbours(Node currentNode, int cellX, int cellY)
         {
             if (cellX < 0 || cellX >= width)
@@ -122,14 +120,14 @@ namespace TowerDefence
         {
             int index = y * width + x;
             Node node = GetNode(x, y);
-
+            /*
             foreach (Node adj in node.Neighbours)
             {
                 adj.RemoveNeighbour(node);
             }
-
-            Nodes[index] = null;
-            cells[index] = 0;
+            */
+            Nodes[index] = new Node(x, y, 99); 
+            cells[index] = 99;
         }
 
         // Return the relative Node using coords
@@ -140,39 +138,58 @@ namespace TowerDefence
             return Nodes[y * width + x];
         }
 
-        public void ToggleNode(int x, int y)
+        public void ToggleRoad(int x, int y)
         {
             Node node = GetNode(x, y);
 
-            if (node == null)
+            if (node == null || node.Cost != 2)
             {
-                AddNode(x, y);
+                AddNode(x, y, 0);
+            }
+            else
+            {
+                Console.WriteLine("removeRoad");
+            }
+        }
+        public void ToggleForest(int x, int y)
+        {
+            Node node = GetNode(x, y);
+
+            if (node == null || node.Cost != 1)
+            {
+                AddNode(x, y, 1);
+            } 
+            else
+            {
+                RemoveNode(x, y);
+            }
+        }
+        public void ToggleBlock(int x, int y)
+        {
+            Node node = GetNode(x, y);
+
+            if (node == null || node.Cost != 2)
+            {
+                AddNode(x, y, 2);
             }
             else
             {
                 RemoveNode(x, y);
             }
         }
-
-        public void ToggleObstacle(int x, int y)
+        public void ToggleSea(int x, int y)
         {
             Node node = GetNode(x, y);
 
-            if (node == null || node.Cost == 1)
+            if (node == null || node.Cost != 3)
             {
-                if (node != null)
-                {
-                    RemoveNode(x, y);
-                }
                 AddNode(x, y, 3);
             }
             else
             {
                 RemoveNode(x, y);
-                AddNode(x, y);
             }
         }
-
 
         public List<Node> GetPath(int startX, int startY, int endX, int endY)
         {
@@ -205,8 +222,108 @@ namespace TowerDefence
 
             return path;
         }
+        
+        public void WaveFunctionCollapse()
+        {
+            Node start;
+            
+            int[] cards = new int[4];
+            bool isEmpty = false;
+            int x;
+            int y;
+            for (int k = 0; k <Nodes.Length; k++)
+            {            
 
-
+                start = Nodes[k];
+                //setto le cards
+                switch (start.Cost)
+                {
+                    case 0: //road
+                        cards[(int)TILES.ROAD] = 3;
+                        cards[(int)TILES.FOREST] = 1;
+                        cards[(int)TILES.BLOCK] = 1;
+                        cards[(int)TILES.WATER] = 0;
+                        break;
+                    case 1: //forest
+                        cards[(int)TILES.ROAD]  = 2;
+                        cards[(int)TILES.FOREST] = 1;
+                        cards[(int)TILES.BLOCK] = 1;
+                        cards[(int)TILES.WATER] = 1;
+                        break;
+                    case 2: //block
+                        cards[(int)TILES.ROAD]  = 3;
+                        cards[(int)TILES.FOREST] = 2;
+                        cards[(int)TILES.BLOCK] = 0;                            
+                        cards[(int)TILES.WATER] = 1;
+                        break;
+                    case 3: //water
+                        cards[(int)TILES.ROAD]  = 2;
+                        cards[(int)TILES.FOREST] = 1;
+                        cards[(int)TILES.BLOCK] = 0;                            
+                        cards[(int)TILES.WATER] = 3;
+                        break;
+                    default:
+                        isEmpty = true;
+                        break;
+                }
+                if (!isEmpty)
+                {
+                    foreach (Node neighbour in start.Neighbours)
+                    {
+                        switch (neighbour.Cost)
+                        {
+                            case 0: cards[(int)TILES.ROAD] = cards[(int)TILES.ROAD] >= 0 ? cards[(int)TILES.ROAD]-- : 0; break;
+                            case 1: cards[(int)TILES.FOREST] = cards[(int)TILES.FOREST] >= 0 ? cards[(int)TILES.FOREST]-- : 0; break;
+                            case 2: cards[(int)TILES.BLOCK] = cards[(int)TILES.BLOCK] >= 0 ? cards[(int)TILES.BLOCK]-- : 0; break;
+                            case 3: cards[(int)TILES.WATER] = cards[(int)TILES.WATER] >= 0 ? cards[(int)TILES.WATER]-- : 0; break;
+                        }
+                    }
+                    for (int i = 0; i < start.Neighbours.Count; i++)
+                    {
+                        x = start.Neighbours[i].X;
+                        y = start.Neighbours[i].Y;
+                        int index = y * width + x;
+                        if (start.Neighbours[i].Cost == (int)TILES.NON)
+                        {
+                            int result = cards[(int)TILES.BLOCK] + cards[(int)TILES.FOREST] + cards[(int)TILES.ROAD] + cards[(int)TILES.FOREST];
+                            int probability = rand.Next(result);
+                            if (probability < cards[(int)TILES.ROAD])
+                            {
+                                cells[index] = (int)TILES.ROAD;
+                                cards[(int)TILES.ROAD] = cards[(int)TILES.ROAD] >= 0 ? cards[(int)TILES.ROAD]-- : 0;
+                            }
+                            else if (probability < cards[(int)TILES.ROAD] + cards[(int)TILES.BLOCK])
+                            {
+                                cells[index] = (int)TILES.BLOCK;
+                                cards[(int)TILES.BLOCK] = cards[(int)TILES.BLOCK] >= 0 ? cards[(int)TILES.BLOCK]-- : 0;
+                            }
+                            else if (probability < cards[(int)TILES.ROAD] + cards[(int)TILES.BLOCK] + cards[(int)TILES.FOREST])
+                            {
+                                cells[index] = (int)TILES.FOREST;
+                                cards[(int)TILES.FOREST] = cards[(int)TILES.FOREST] >= 0 ? cards[(int)TILES.FOREST]-- : 0;
+                            }
+                            else if (probability < cards[(int)TILES.ROAD] + cards[(int)TILES.BLOCK] + cards[(int)TILES.FOREST] + cards[(int)TILES.WATER])
+                            {
+                                cells[index] = (int)TILES.WATER;
+                                cards[(int)TILES.WATER] = cards[(int)TILES.WATER] >= 0 ? cards[(int)TILES.WATER]-- : 0;
+                            }
+                        }
+                    }
+                }
+                x = k % width;
+                y = k / width;
+                if (Nodes[k].Cost == (int)TILES.NON)
+                {
+                    switch (cells[k])
+                    {
+                        case 0: ToggleRoad(x, y); break;
+                        case 1: ToggleForest(x, y); break;
+                        case 2: ToggleBlock(x, y); break;
+                        case 3: ToggleSea(x, y); break;
+                    }
+                }
+            }
+        }
 
         public void AStar(Node start, Node end)
         {
@@ -247,8 +364,6 @@ namespace TowerDefence
             return Math.Abs(start.X - end.X) + Math.Abs(start.Y - end.Y);       // Manhattan Distance;
         }
 
-
-
         public void Draw()
         {
             for (int y = 0; y < height; y++)
@@ -259,21 +374,22 @@ namespace TowerDefence
 
                     if (GetNode(x, y) == null)
                     {
-                        sprite.DrawColor(new Vector4(0.3f, 1, 0.3f, 1));
+                    }
+                    else if (GetNode(x, y).Cost == 0)
+                    {
+                        sprite.DrawTexture(GFXMngr.GetTexture("road"));
                     }
                     else if (GetNode(x, y).Cost == 1)
                     {
-                        sprite.DrawTexture(GFXMngr.GetTexture("road"));
-//                        sprite.DrawColor(new Vector4(0.5f, 0.5f, 0.5f, 1));
+                        sprite.DrawTexture(GFXMngr.GetTexture("forest"));
                     }
                     else if (GetNode(x, y).Cost == 2)
                     {
                         sprite.DrawTexture(GFXMngr.GetTexture("block"));
-                        //sprite.DrawColor(new Vector4(0.5f, 1, 1, 1));
                     }
-                    else 
+                    else if (GetNode(x, y).Cost == 3)
                     {
-                        sprite.DrawColor(new Vector4(1f, 0.6f, 0.67f, 1));
+                        sprite.DrawTexture(GFXMngr.GetTexture("water"));
                     }
                 }
             }
