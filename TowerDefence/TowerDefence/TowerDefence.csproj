@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\BaseCamp.cs" />
+    <Compile Include="Actors\Enemy.cs" />
     <Compile Include="Engine\Interface\I_Drawable.cs" />
     <Compile Include="Engine\Interface\I_Updatable.cs" />
     <Compile Include="Engine\PathFinding\Map.cs" />

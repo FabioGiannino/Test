@@ -10,7 +10,7 @@ namespace TowerDefence
     {
         public int X { get; }
         public int Y { get; }
-        public int Cost { get; }
+        public int Cost { get; set; }
         public List<Node> Neighbours { get; }
 
         public Node(int x, int y, int cost)

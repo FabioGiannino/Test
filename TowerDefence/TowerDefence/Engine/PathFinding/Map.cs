@@ -10,7 +10,7 @@ namespace TowerDefence
 {
     class Map : I_Drawable
     {
-        private enum TILES
+        public enum TILES
         {
             ROAD = 0,
             FOREST = 1,
@@ -131,7 +131,7 @@ namespace TowerDefence
         }
 
         // Return the relative Node using coords
-        Node GetNode(int x, int y)
+        public Node GetNode(int x, int y)
         {
             if ((x >= width || x < 0) || (y >= height || y < 0)) { return null; }
 
@@ -148,7 +148,7 @@ namespace TowerDefence
             }
             else
             {
-                Console.WriteLine("removeRoad");
+                RemoveNode(x, y);
             }
         }
         public void ToggleForest(int x, int y)
@@ -233,34 +233,33 @@ namespace TowerDefence
             int y;
             for (int k = 0; k <Nodes.Length; k++)
             {            
-
                 start = Nodes[k];
                 //setto le cards
                 switch (start.Cost)
                 {
                     case 0: //road
-                        cards[(int)TILES.ROAD] = 3;
+                        cards[(int)TILES.ROAD] = 2;
                         cards[(int)TILES.FOREST] = 1;
                         cards[(int)TILES.BLOCK] = 1;
                         cards[(int)TILES.WATER] = 0;
                         break;
                     case 1: //forest
-                        cards[(int)TILES.ROAD]  = 2;
-                        cards[(int)TILES.FOREST] = 1;
-                        cards[(int)TILES.BLOCK] = 1;
+                        cards[(int)TILES.ROAD]  = 1;
+                        cards[(int)TILES.FOREST] = 2;
+                        cards[(int)TILES.BLOCK] = 0;
                         cards[(int)TILES.WATER] = 1;
                         break;
                     case 2: //block
-                        cards[(int)TILES.ROAD]  = 3;
-                        cards[(int)TILES.FOREST] = 2;
-                        cards[(int)TILES.BLOCK] = 0;                            
+                        cards[(int)TILES.ROAD]  = 1;
+                        cards[(int)TILES.FOREST] = 1;
+                        cards[(int)TILES.BLOCK] = 1;                            
                         cards[(int)TILES.WATER] = 1;
                         break;
                     case 3: //water
-                        cards[(int)TILES.ROAD]  = 2;
+                        cards[(int)TILES.ROAD]  = 0;
                         cards[(int)TILES.FOREST] = 1;
-                        cards[(int)TILES.BLOCK] = 0;                            
-                        cards[(int)TILES.WATER] = 3;
+                        cards[(int)TILES.BLOCK] = 1;                            
+                        cards[(int)TILES.WATER] = 2;
                         break;
                     default:
                         isEmpty = true;
@@ -286,40 +285,36 @@ namespace TowerDefence
                         if (start.Neighbours[i].Cost == (int)TILES.NON)
                         {
                             int result = cards[(int)TILES.BLOCK] + cards[(int)TILES.FOREST] + cards[(int)TILES.ROAD] + cards[(int)TILES.FOREST];
-                            int probability = rand.Next(result);
+                            int probability = rand.Next(result) - 1;
                             if (probability < cards[(int)TILES.ROAD])
                             {
                                 cells[index] = (int)TILES.ROAD;
+                                Nodes[index].Cost = cells[index];
                                 cards[(int)TILES.ROAD] = cards[(int)TILES.ROAD] >= 0 ? cards[(int)TILES.ROAD]-- : 0;
                             }
                             else if (probability < cards[(int)TILES.ROAD] + cards[(int)TILES.BLOCK])
                             {
                                 cells[index] = (int)TILES.BLOCK;
+                                Nodes[index].Cost = cells[index];
                                 cards[(int)TILES.BLOCK] = cards[(int)TILES.BLOCK] >= 0 ? cards[(int)TILES.BLOCK]-- : 0;
                             }
                             else if (probability < cards[(int)TILES.ROAD] + cards[(int)TILES.BLOCK] + cards[(int)TILES.FOREST])
                             {
                                 cells[index] = (int)TILES.FOREST;
+                                Nodes[index].Cost = cells[index];
                                 cards[(int)TILES.FOREST] = cards[(int)TILES.FOREST] >= 0 ? cards[(int)TILES.FOREST]-- : 0;
                             }
                             else if (probability < cards[(int)TILES.ROAD] + cards[(int)TILES.BLOCK] + cards[(int)TILES.FOREST] + cards[(int)TILES.WATER])
                             {
                                 cells[index] = (int)TILES.WATER;
+                                Nodes[index].Cost = cells[index];
                                 cards[(int)TILES.WATER] = cards[(int)TILES.WATER] >= 0 ? cards[(int)TILES.WATER]-- : 0;
                             }
+                            else
+                            {
+                                Console.WriteLine("probabilità fuori");
+                            }
                         }
-                    }
-                }
-                x = k % width;
-                y = k / width;
-                if (Nodes[k].Cost == (int)TILES.NON)
-                {
-                    switch (cells[k])
-                    {
-                        case 0: ToggleRoad(x, y); break;
-                        case 1: ToggleForest(x, y); break;
-                        case 2: ToggleBlock(x, y); break;
-                        case 3: ToggleSea(x, y); break;
                     }
                 }
             }

@@ -11,7 +11,8 @@ namespace TowerDefence
     class Scene1 : Scene
     {
         protected Map Map;
-
+        protected BaseCamp baseCamp;
+        protected Enemy enemy;
         private bool clickedL = false;
         private bool clickedR = false;
         private bool clickedC = false;
@@ -26,6 +27,24 @@ namespace TowerDefence
             LoadAssets();
             base.Start();
             Map = new Map(Game.HorizontalCells, Game.VerticalCells);
+            for (int block = Game.HorizontalCells -1; block>= 0; block--)
+            {
+                if (Map.GetNode(block,0).Cost == (int)Map.TILES.ROAD)
+                {
+                    baseCamp = new BaseCamp(block, 0);
+                    break;
+                }
+            }
+            for (int block = 0; block < Game.HorizontalCells - 1; block++)
+            {
+                if (Map.GetNode(block, Game.VerticalCells - 1).Cost == (int)Map.TILES.ROAD)
+                {
+                    enemy = new Enemy(block, Game.VerticalCells - 1);
+                    break;
+                }
+            }
+
+
         }
 
         protected override void LoadAssets()
@@ -34,6 +53,8 @@ namespace TowerDefence
             GFXMngr.AddTexture("block", "Assets/Block.png");
             GFXMngr.AddTexture("water", "Assets/Sea.png");
             GFXMngr.AddTexture("forest", "Assets/Forest.png");
+            GFXMngr.AddTexture("baseCamp", "Assets/Player.png");
+            GFXMngr.AddTexture("enemy", "Assets/Enemy.png");
         }
 
         public override void Input()
@@ -91,13 +112,16 @@ namespace TowerDefence
         public override void Update()
         {
             base.Update();
-            Map.WaveFunctionCollapse();
         }
 
 
         public override void Draw()
         {
             Map.Draw();
+            if (baseCamp != null)
+                baseCamp.Draw();
+            if (enemy != null)
+                enemy.Draw();
         }
     }
 }
