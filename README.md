@@ -1,7 +1,2 @@
-# Test
-Progetto di aiv di test per distruggere github
-developed by fabiog
-
-
-primo commit FG task 0001
-nuovo branch - federica/task
+# Tower Defence mechanics
+Little uncompleted project to study and recreate a tower defence 2D game with Fast2D AIV library
